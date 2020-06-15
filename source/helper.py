@@ -3,26 +3,62 @@
 	Functionalities
 	---------------
 	Data exploration - Tag: `check`, `describe`
-	Feature engineering - Tag: `convert`
+	Feature engineering - Tag: `convert`, `merge`, `make`
 
 '''
 import pandas as pd
 import numpy as np
+import copy
+import nltk
 
 def check_nan(df):
 	return df.isna().sum(axis=0)
 
-def check_length(df, column):
-	pass
+def convert_bool_to_int(row):
+	if row == 'true':
+		return 1
+	elif row == 'false':
+		return 0
+	else:
+		return np.nan
 
-def check_url_domain(df, column):
-	pass
+def check_text_length(df, column, length, is_index=False):
+	tokenize_text = df[column].apply(lambda text: nltk.word_tokenize(text))
+	tokens_length = tokenize_text.apply(lambda tokens: len(tokens) <= length)
+	ind = np.nonzero(tokens_length.values)[0]
 
-def describe_freq(df, column):
-	pass
+	if is_index:
+		return ind
 
-def describe_stat(df, columns, methods):
-	pass
+	return df.iloc[ind]
 
-def convert_type(df, np_type, columns):
-	pass
+def convert_url_to_string(df, column):
+	res = df.copy()
+	urls_hyphen = res[column].apply(lambda url: url.split('/')[-2])
+	urls_string = urls_hyphen.apply(lambda url: " ".join(url.split("-")))
+	res[column] = urls_string
+
+	return res
+
+def make_left_to_right(df, left_col, right_col, ind):
+	res = df.copy()
+	res.loc[ind, left_col] = res.loc[ind, right_col]
+	return res
+
+def describe_freq(df, column, times):
+	res = df[column].value_counts()
+	for i in range(1, times):
+		res = res.value_counts()
+	return res
+
+def merge_duplicate_row(df, id_column):
+	unique_id = set()
+	unique_index = []
+	course_ids = df[id_column].values
+
+	for ind, course_id in enumerate(course_ids):
+		if course_id not in unique_id:
+			unique_id.add(course_id)
+			unique_index.append(ind)
+
+	return df.iloc[unique_index]
