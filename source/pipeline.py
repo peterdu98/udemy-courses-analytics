@@ -24,4 +24,20 @@ def clean_data(data):
 	ind = helper.check_text_length(df, 'course_title', 2, is_index=True)
 	df = helper.make_left_to_right(df, 'course_title', 'url', ind)
 
+	# Price feature
+	df = helper.convert_free_price(df, "price")
+
+	# Level feature
+	data = pd.get_dummies(df, columns=['level'])
+
+	# Content duration feature
+	df['content_duration'] = df['content_duration'].apply(lambda duration: helper.convert_duration(duration))
+	df['content_duration'] = df['content_duration'].astype(np.float32)
+
+	# Published time
+	df = helper.convert_published_time(df, 'published_timestamp')
+
+	# Subject feature
+	df = pd.get_dummies(df, columns=['subject'])
+
 	return df

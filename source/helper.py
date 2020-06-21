@@ -14,14 +14,6 @@ import nltk
 def check_nan(df):
 	return df.isna().sum(axis=0)
 
-def convert_bool_to_int(row):
-	if row == 'true':
-		return 1
-	elif row == 'false':
-		return 0
-	else:
-		return np.nan
-
 def check_text_length(df, column, length, is_index=False):
 	tokenize_text = df[column].apply(lambda text: nltk.word_tokenize(text))
 	tokens_length = tokenize_text.apply(lambda tokens: len(tokens) <= length)
@@ -32,11 +24,46 @@ def check_text_length(df, column, length, is_index=False):
 
 	return df.iloc[ind]
 
+def convert_bool_to_int(row):
+	if row == 'true':
+		return 1
+	elif row == 'false':
+		return 0
+	else:
+		return np.nan
+
 def convert_url_to_string(df, column):
 	res = df.copy()
 	urls_hyphen = res[column].apply(lambda url: url.split('/')[-2])
 	urls_string = urls_hyphen.apply(lambda url: " ".join(url.split("-")))
 	res[column] = urls_string
+
+	return res
+
+def convert_free_price(df, column):
+	res = df.copy()
+	res[column] = res[column].apply(lambda price: price if price != 'Free' else '0')
+	res[column] = res[column].astype(np.int32)
+
+	return res
+
+def convert_duration(row):
+	if row != '0':
+		hour, vocab = row.split()
+		if vocab == "mins":
+			return float(hour)/60
+		elif vocab == "hour" or "hours":
+			return float(hour)
+		else:
+			return float(hour) * 2.5 / 60
+
+	return np.nan
+
+def convert_published_time(df, column):
+	res = df.copy()
+	res[column] = res[column].apply(lambda time: time.split("-")[0])
+	res['published_year'] = res[column].astype(np.int16)
+	res.drop(column, axis=1, inplace=True)
 
 	return res
 
