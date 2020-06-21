@@ -78,6 +78,18 @@ def describe_freq(df, column, times):
 		res = res.value_counts()
 	return res
 
+def describe_crosstab(df, x_col, y_col):
+	temp = df.copy()
+	temp[x_col] = temp[x_col] > temp[x_col].mean()
+	temp[y_col] = temp[y_col] > temp[y_col].mean()
+
+	res = pd.crosstab(temp[x_col], temp[y_col])
+	res.columns = ['low_{}'.format(y_col), 'high_{}'.format(y_col)]
+	res.index = ['low_{}'.format(x_col), 'high_{}'.format(x_col)]
+
+	return res
+
+
 def merge_duplicate_row(df, id_column):
 	unique_id = set()
 	unique_index = []
