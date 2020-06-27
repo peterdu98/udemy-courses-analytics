@@ -16,6 +16,10 @@ In this project, NLP models will be built to find the answer for questions above
 
 ## Requirements
 * Python version: 3.7.3
+* Cloning the project
+```
+git clone https://github.com/peterdu98/udemy-courses-analytics.git
+```
 * Using the following commands in your virtual environment to install necessary packages
 ```
 pip install -r requirements.txt
