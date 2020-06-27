@@ -26,5 +26,8 @@ pip install -r requirements.txt
 python -m nltk.downloader stopwords
 ```
 
+## Reports
+* [Wiki - Report v1.0](https://github.com/peterdu98/udemy-courses-analytics/wiki/Report-v1.0)
+
 ## References
 1. Udemy Courses dataset on Kaggle - https://www.kaggle.com/andrewmvd/udemy-courses
