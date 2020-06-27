@@ -11,7 +11,6 @@ import numpy as np
 import copy
 import nltk
 import string
-from textblob import TextBlob
 
 ######################
 ###### CONSTANT ######
@@ -76,8 +75,9 @@ def get_top_topics(df, columns, phrase_len, top=None, by="freq"):
 	# Initialisation
 	res = dict()
 
-	# Getting the frequency for each topic
+	# Generate staistical information
 	if by == "freq":
+		# Getting the frequency for each topic
 		for topics in df[columns].values:
 			topics = topics[0].split(", ")
 			for topic in topics:
@@ -87,6 +87,17 @@ def get_top_topics(df, columns, phrase_len, top=None, by="freq"):
 						res[topic] = 1
 					else:
 						res[topic] += 1
+	elif by in ["sub", "reviews"]:
+		# Getting number of subscribers/reviews for each topic
+		for num, topics in df[columns].values:
+			topics = topics.split(", ")
+			for topic in topics:
+				tokens = topic.split()
+				if len(tokens) == phrase_len:
+					if topic not in res:
+						res[topic] = num
+					else:
+						res[topic] += num
 
 	# Sorting
 	res = sorted(res.items(), key=lambda x: x[1], reverse=True)
@@ -179,7 +190,7 @@ def preprocess_text(df, column, new_col):
 	res = df.copy()
 
 	# Initialisation
-	ignored_words = set(["learn", "learned", "learning", "build", "building", "scratch", "create", "how", "using", "maximize", "course", "beginner", "beginners", "without", "easy", "pro", "hours", "minutes", "play", "hour", "levels", "level", "step", "basics", "complete"])
+	ignored_words = set(["learn", "learned", "learning", "build", "building", "scratch", "create", "how", "using", "maximize", "course", "beginner", "beginners", "without", "easy", "pro", "hours", "minutes", "play", "hour", "levels", "level", "step", "basics", "complete", "weird", "parts", "introduction", "brief", "week"])
 	ignored_words = ignored_words.union(STOPWORDS)
 
 	# Lowercase the feature

@@ -12,7 +12,15 @@ In this project, NLP models will be built to find the answer for questions above
 - [x] Feature engineering - Keep meaningful columns or aggregate new meaninful columns
 - [x] Generating statistical information for finding the definition of popularity.
 - [x] Generating topics for each course by using NLP
-- [ ] Finding popular topics in the dataset
+- [x] Finding popular topics in the dataset
+
+## Requirements
+* Python version: 3.7.3
+* Using the following commands in your virtual environment to install necessary packages
+```
+pip install -r requirements.txt
+python -m nltk.downloader stopwords
+```
 
 ## References
 1. Udemy Courses dataset on Kaggle - https://www.kaggle.com/andrewmvd/udemy-courses
